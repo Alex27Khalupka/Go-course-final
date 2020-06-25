@@ -4,7 +4,7 @@
 
 ### Geting started
 
-1. clone this repository
+1. clone this repository: `git clone https://github.com/Alex27Khalupka/Go-course-final`
 
 2. run `make`
 
