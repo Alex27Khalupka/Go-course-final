@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// func GetGroups gets all groups with tasks assigned to them from database
 func GetGroups(db *sql.DB) []model.Groups {
 	rows, err := db.Query("SELECT groups.id, groups.title FROM groups")
 	if err != nil {
@@ -32,6 +33,7 @@ func GetGroups(db *sql.DB) []model.Groups {
 	return groups
 }
 
+// func GetGroups gets all tasks with time frames assigned to them from database
 func GetTasks(db *sql.DB) []model.Tasks {
 
 	rows, err := db.Query("SELECT tasks.id, tasks.title, tasks.group_id FROM tasks")
@@ -54,15 +56,19 @@ func GetTasks(db *sql.DB) []model.Tasks {
 	return tasks
 }
 
+// func PostGroups inserts group from request to database
+// returns created group
 func PostGroups(db *sql.DB, group model.Groups) (model.Groups, error) {
-	if err := db.QueryRow("INSERT INTO groups (title) VALUES ($1) RETURNING id", group.Title).Scan(&group.ID);
-	err != nil {
+	if err := db.QueryRow("INSERT INTO groups (title) VALUES ($1) RETURNING id", group.Title).Scan(&group.ID); err != nil {
 		return group, errors.New("group with this title already exists")
 	}
 
 	return group, nil
 }
 
+// func PostTAsks inserts task from request to database
+// returns created task
+// return error if groups id doesn't exist
 func PostTasks(db *sql.DB, task model.Tasks) (model.Tasks, error) {
 	if err := db.QueryRow("INSERT INTO tasks (title, group_id) VALUES ($1, $2) RETURNING id", task.Title, task.GroupId).
 		Scan(&task.ID); err != nil {
@@ -72,6 +78,9 @@ func PostTasks(db *sql.DB, task model.Tasks) (model.Tasks, error) {
 	return task, nil
 }
 
+// func PostTimeFrames inserts time frame from request to database
+// returns created time frame
+// returns error if tasks id doesn't exist
 func PostTimeFrames(db *sql.DB, timeFrame model.TimeFrames) (model.TimeFrames, error) {
 	if err := db.QueryRow("INSERT INTO time_frames (task_id, from_time, to_time) VALUES ($1, $2, $3) RETURNING id",
 		timeFrame.TaskId, timeFrame.From, timeFrame.To).
@@ -82,6 +91,9 @@ func PostTimeFrames(db *sql.DB, timeFrame model.TimeFrames) (model.TimeFrames, e
 	return timeFrame, nil
 }
 
+// func PutGroup updates group with given id
+// returns updated group with tasks assigned to it
+// return error if groups id doesn't exists
 func PutGroups(db *sql.DB, id string, group model.Groups) (model.Groups, error) {
 
 	var newGroup model.Groups
@@ -116,6 +128,9 @@ func PutGroups(db *sql.DB, id string, group model.Groups) (model.Groups, error) 
 	return newGroup, nil
 }
 
+// func PutTask updates group with given id
+// returns updated task with time frames assigned to it
+// return error if tasks or groups id doesn't exists
 func PutTasks(db *sql.DB, id string, task model.Tasks) (model.Tasks, error) {
 
 	var newTask model.Tasks
@@ -146,6 +161,9 @@ func PutTasks(db *sql.DB, id string, task model.Tasks) (model.Tasks, error) {
 	return newTask, nil
 }
 
+// func DeleteGroups deletes group with given id from database
+// with all assigned tasks to it
+// returns error if id isn't uuid
 func DeleteGroups(db *sql.DB, id string) error {
 	rows, err := db.Query("SELECT id FROM tasks WHERE group_id = $1", id)
 	if err != nil {
@@ -170,6 +188,9 @@ func DeleteGroups(db *sql.DB, id string) error {
 	return nil
 }
 
+// func DeleteTasks deletes task with given id from database
+// with all assigned time frames to it
+// returns error if id isn't uuid
 func DeleteTasks(db *sql.DB, id string) error {
 	_, err := db.Query("DELETE FROM time_frames WHERE task_id = $1", id)
 	if err != nil {
@@ -183,6 +204,9 @@ func DeleteTasks(db *sql.DB, id string) error {
 	return nil
 }
 
+// func DeleteTimeFrames deletes time frames with given id from database
+// with all assigned time frames to it
+// returns error if id isn't uuid
 func DeleteTimeFrames(db *sql.DB, id string) error {
 	_, err := db.Query("DELETE FROM time_frames WHERE id = $1", id)
 	if err != nil {
@@ -191,6 +215,7 @@ func DeleteTimeFrames(db *sql.DB, id string) error {
 	return nil
 }
 
+// func getGroupTasks returns all tasks assigned to given group
 func getGroupTasks(db *sql.DB, id string) []model.Tasks {
 	rows, err := db.Query("SELECT tasks.id, tasks.title, tasks.group_id FROM tasks WHERE group_id = $1", id)
 	if err != nil {
@@ -209,6 +234,7 @@ func getGroupTasks(db *sql.DB, id string) []model.Tasks {
 
 }
 
+// func getTaskTimeFrames returns all time frames assigned to given task
 func getTaskTimeFrames(db *sql.DB, id string) []model.TimeFrames {
 	var timeFrames []model.TimeFrames
 

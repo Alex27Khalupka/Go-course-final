@@ -24,6 +24,7 @@ func New(config *Config) *APIServer {
 	}
 }
 
+// func Start() configures store and router
 func (s *APIServer) Start() error {
 
 	fmt.Println("starting api server")
@@ -37,6 +38,7 @@ func (s *APIServer) Start() error {
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
 
+// func configureRouter sets handlers for specific urls
 func (s *APIServer) configureRouter() {
 	s.router.HandleFunc("/groups", s.handleGetGroups).Methods(http.MethodGet)
 	s.router.HandleFunc("/tasks", s.handleGetTasks).Methods(http.MethodGet)
@@ -60,6 +62,7 @@ func (s *APIServer) configureStore() error {
 	return nil
 }
 
+// func handleGetGroups handles GET request for /groups
 func (s *APIServer) handleGetGroups(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -80,6 +83,7 @@ func (s *APIServer) handleGetGroups(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// func handleGetGroups handles GET request for /tasks
 func (s *APIServer) handleGetTasks(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -100,6 +104,7 @@ func (s *APIServer) handleGetTasks(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// func handleGetGroups handles POST request for /groups
 func (s *APIServer) handlePostGroups(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -139,6 +144,7 @@ func (s *APIServer) handlePostGroups(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// func handleGetGroups handles POST request for /tasks
 func (s *APIServer) handlePostTasks(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -179,6 +185,7 @@ func (s *APIServer) handlePostTasks(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// func handleGetGroups handles POST request for /time_frames
 func (s *APIServer) handlePostTimeFrames(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -228,6 +235,7 @@ func (s *APIServer) handlePostTimeFrames(w http.ResponseWriter, req *http.Reques
 	}
 }
 
+// func handleGetGroups handles PUT request for /groups/{id}
 func (s *APIServer) handlePutGroups(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -267,6 +275,7 @@ func (s *APIServer) handlePutGroups(w http.ResponseWriter, req *http.Request) {
 
 }
 
+// func handleGetGroups handles PUT request for /tasks/{id}
 func (s *APIServer) handlePutTasks(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -311,6 +320,7 @@ func (s *APIServer) handlePutTasks(w http.ResponseWriter, req *http.Request) {
 
 }
 
+// func handleGetGroups handles DELETE request for /groups/{id}
 func (s *APIServer) handleDeleteGroups(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -327,6 +337,7 @@ func (s *APIServer) handleDeleteGroups(w http.ResponseWriter, req *http.Request)
 
 }
 
+// func handleGetGroups handles DELETE request for /tasks/{id}
 func (s *APIServer) handleDeleteTasks(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -342,6 +353,8 @@ func (s *APIServer) handleDeleteTasks(w http.ResponseWriter, req *http.Request) 
 	w.WriteHeader(http.StatusNoContent)
 
 }
+
+// func handleGetGroups handles DELETE request for /timeframes/{id}
 func (s *APIServer) handleDeleteTimeFrames(w http.ResponseWriter, req *http.Request) {
 	if err := s.store.Open(); err != nil {
 		log.Fatal(err)
@@ -359,6 +372,7 @@ func (s *APIServer) handleDeleteTimeFrames(w http.ResponseWriter, req *http.Requ
 
 }
 
+// func getID returns id of an object from url
 func getID(req *http.Request, idName string) string {
 	vars := mux.Vars(req)
 	id := vars[idName]
