@@ -15,6 +15,8 @@ func init() {
 	flag.StringVar(&configPath, "config-path", "configs/apiserver.toml", "path to config file")
 }
 
+const DbURI = "POSTGRES_URI"
+
 func main() {
 	flag.Parse()
 

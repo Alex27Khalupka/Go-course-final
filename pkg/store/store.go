@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
+	"os"
 )
 
 type Store struct {
@@ -17,7 +18,8 @@ func New(config *Config) *Store {
 }
 
 func (s *Store) Open() error {
-	db, err := sql.Open("postgres", s.config.DatabaseURL)
+	dbURI := os.Getenv("POSTGRES_URI")
+	db, err := sql.Open("postgres", dbURI)
 
 	if err != nil {
 		return err
