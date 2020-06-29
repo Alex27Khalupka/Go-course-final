@@ -12,8 +12,6 @@ services:
       - api:/usr/src/app/
     depends_on:
       - fullstack-postgres
-    #networks:
-    #  - host
     network_mode: "host"
 
 
@@ -35,21 +33,13 @@ services:
   migrations:
     image: migrate/migrate
     network_mode: "host"
-    environment:
-      - POSTGRES_URI=postgres://localhost:5431/tasks?user=postgres&password=postgres&sslmode=disable
     volumes:
       - ${PWD}/migrations:/migrations
-    command: ["-verbose", "-path", "migrations", "-database",  $POSTGRES_URI, "up"]
+    command: ["-verbose", "-path", "migrations", "-database", "postgres://localhost:5431/tasks?user=postgres&password=postgres&sslmode=disable", "up"]
 
     depends_on:
       - fullstack-postgres
 
 volumes:
-  #mmm:
   api:
   database_postgres:
-
-# Networks to be created to facilitate communication between containers
-#networks:
-#  host:
-#    driver: host
