@@ -14,7 +14,7 @@ import (
 type APIServer struct {
 	config *Config
 	router *mux.Router
-	store  *store.Store
+	Store  *store.Store
 }
 
 func New(config *Config) *APIServer {
@@ -57,19 +57,19 @@ func (s *APIServer) configureStore() error {
 	if err := st.Open(); err != nil {
 		return err
 	}
-	s.store = st
+	s.Store = st
 
 	return nil
 }
 
 // func handleGetGroups handles GET request for /groups
 func (s *APIServer) handleGetGroups(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	groups := model.ResponseGroups{Groups: service.GetGroups(s.store.GetDB())}
+	groups := model.ResponseGroups{Groups: service.GetGroups(s.Store.GetDB())}
 
 	jsonResponse, err := json.Marshal(groups)
 	if err != nil {
@@ -85,12 +85,12 @@ func (s *APIServer) handleGetGroups(w http.ResponseWriter, req *http.Request) {
 
 // func handleGetGroups handles GET request for /tasks
 func (s *APIServer) handleGetTasks(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	tasks := model.ResponseTasks{Tasks: service.GetTasks(s.store.GetDB())}
+	tasks := model.ResponseTasks{Tasks: service.GetTasks(s.Store.GetDB())}
 
 	jsonResponse, err := json.Marshal(tasks)
 	if err != nil {
@@ -106,7 +106,7 @@ func (s *APIServer) handleGetTasks(w http.ResponseWriter, req *http.Request) {
 
 // func handleGetGroups handles POST request for /groups
 func (s *APIServer) handlePostGroups(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -125,7 +125,7 @@ func (s *APIServer) handlePostGroups(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	group, err = service.PostGroups(s.store.GetDB(), group)
+	group, err = service.PostGroups(s.Store.GetDB(), group)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -146,7 +146,7 @@ func (s *APIServer) handlePostGroups(w http.ResponseWriter, req *http.Request) {
 
 // func handleGetGroups handles POST request for /tasks
 func (s *APIServer) handlePostTasks(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -165,7 +165,7 @@ func (s *APIServer) handlePostTasks(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	task, err = service.PostTasks(s.store.GetDB(), task)
+	task, err = service.PostTasks(s.Store.GetDB(), task)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		log.Println(err)
@@ -187,7 +187,7 @@ func (s *APIServer) handlePostTasks(w http.ResponseWriter, req *http.Request) {
 
 // func handleGetGroups handles POST request for /time_frames
 func (s *APIServer) handlePostTimeFrames(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -215,7 +215,7 @@ func (s *APIServer) handlePostTimeFrames(w http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	timeFrame, err = service.PostTimeFrames(s.store.GetDB(), timeFrame)
+	timeFrame, err = service.PostTimeFrames(s.Store.GetDB(), timeFrame)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		log.Println(err)
@@ -237,7 +237,7 @@ func (s *APIServer) handlePostTimeFrames(w http.ResponseWriter, req *http.Reques
 
 // func handleGetGroups handles PUT request for /groups/{id}
 func (s *APIServer) handlePutGroups(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -256,7 +256,7 @@ func (s *APIServer) handlePutGroups(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	group, err = service.PutGroups(s.store.GetDB(), id, group)
+	group, err = service.PutGroups(s.Store.GetDB(), id, group)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -277,7 +277,7 @@ func (s *APIServer) handlePutGroups(w http.ResponseWriter, req *http.Request) {
 
 // func handleGetGroups handles PUT request for /tasks/{id}
 func (s *APIServer) handlePutTasks(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -303,7 +303,7 @@ func (s *APIServer) handlePutTasks(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	task, err = service.PutTasks(s.store.GetDB(), id, task)
+	task, err = service.PutTasks(s.Store.GetDB(), id, task)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -322,13 +322,13 @@ func (s *APIServer) handlePutTasks(w http.ResponseWriter, req *http.Request) {
 
 // func handleGetGroups handles DELETE request for /groups/{id}
 func (s *APIServer) handleDeleteGroups(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 	}
 
 	id := getID(req, "id")
 
-	if err := service.DeleteGroups(s.store.GetDB(), id); err != nil {
+	if err := service.DeleteGroups(s.Store.GetDB(), id); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -339,13 +339,13 @@ func (s *APIServer) handleDeleteGroups(w http.ResponseWriter, req *http.Request)
 
 // func handleGetGroups handles DELETE request for /tasks/{id}
 func (s *APIServer) handleDeleteTasks(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 	}
 
 	id := getID(req, "id")
 
-	if err := service.DeleteTasks(s.store.GetDB(), id); err != nil {
+	if err := service.DeleteTasks(s.Store.GetDB(), id); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -356,14 +356,14 @@ func (s *APIServer) handleDeleteTasks(w http.ResponseWriter, req *http.Request) 
 
 // func handleGetGroups handles DELETE request for /timeframes/{id}
 func (s *APIServer) handleDeleteTimeFrames(w http.ResponseWriter, req *http.Request) {
-	if err := s.store.Open(); err != nil {
+	if err := s.Store.Open(); err != nil {
 		log.Fatal(err)
 		return
 	}
 
 	id := getID(req, "id")
 
-	if err := service.DeleteTimeFrames(s.store.GetDB(), id); err != nil {
+	if err := service.DeleteTimeFrames(s.Store.GetDB(), id); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
