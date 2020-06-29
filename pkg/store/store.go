@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
+	"log"
 	"os"
 )
 
@@ -18,7 +19,9 @@ func New(config *Config) *Store {
 }
 
 func (s *Store) Open() error {
+	//"host=localhost port=5431 user=postgres password=postgres dbname=tasks sslmode=disable"
 	dbURI := os.Getenv("POSTGRES_URI")
+	log.Println(dbURI)
 	db, err := sql.Open("postgres", dbURI)
 
 	if err != nil {
